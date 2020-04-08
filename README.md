@@ -1,2 +1,0 @@
-# huippuviinitalkossa
-Created with CodeSandbox

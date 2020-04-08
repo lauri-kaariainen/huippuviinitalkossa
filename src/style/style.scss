@@ -1,0 +1,90 @@
+:root{
+  --main-button-background:#ff39a8;
+  --main-button-color:hsl(210deg,30%,8%);
+}
+
+html{
+  background:lightcoral;
+  background: hsl(210deg, 30%, 8%);
+  color:brown;
+  color:#ff39a8;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  
+}
+body{
+  max-width:670px;
+  margin:auto;
+  font-size:1.1em;
+}
+h1{
+  color:#ffe100;
+  font-size:2.3em;
+}
+
+button{
+  color:var(--main-button-color);
+  background:var(--main-button-background);
+  
+  border: none;
+  cursor: pointer;
+  font-size:0.9em;
+  font-variant: small-caps;
+  margin:-5px;
+  margin-left:0px;
+  padding:1px;
+  padding-left:4px;
+
+}
+input{
+  color:white;
+  font-size:1.1em;
+  width: 130px;
+  // background:#00beff;
+background:transparent;
+  // border:none;
+  border:2px solid #00beff;
+  shadow:none;
+}
+.price{
+  color:#00beff;
+  font-size:1em;
+  
+}
+.filterButton.active{
+  background: #00beff;
+  color:var(--main-button-color);
+  
+}
+.filterButton{
+  color:#00beff;
+  background:var(--main-button-color);
+  border:1px solid #00beff;
+  padding:5px 10px 5px 10px;
+  margin:inital;
+}
+
+.wine{
+  margin-top:20px;
+}
+
+
+span{
+  padding:10px;
+}
+.fiveStarsSpan:before{
+  content: "🌟";
+
+}
+
+.fourStars:before{
+}
+
+
+span.valkoviinit:before{
+  content:"🍷";
+  font-size:1.3em;
+  filter:grayscale(1) sepia(3) brightness(4);
+}
+span.punaviinit:before{
+  font-size:1.3em;
+content:"🍷"}
