@@ -12,6 +12,13 @@ import fourStarWines from "./konala4starwines.json";
 
 const F = Fragment;
 
+const orderedFiveStarWines = fiveStarWines
+  .slice()
+  .sort((a, b) => (a[1] > b[1] ? 1 : -1));
+const orderedFourStarWines = fourStarWines
+  .slice()
+  .sort((a, b) => (a[1] > b[1] ? 1 : -1));
+
 const NameButton = ({ id, name }) => (
   <button
     class="wineName"
@@ -45,7 +52,8 @@ function Wines() {
     filterText.length
       ? wine[1].toLowerCase().includes(filterText.toLowerCase()) ||
         wine[6].toLowerCase().includes(filterText.toLowerCase()) ||
-        wine[7].toLowerCase().includes(filterText.toLowerCase())
+        wine[7].toLowerCase().includes(filterText.toLowerCase()) ||
+        wine[8].toLowerCase().includes(filterText.toLowerCase())
       : true;
 
   useEffect(() => {
@@ -71,20 +79,20 @@ function Wines() {
         €
       </button>
       {(orderByPrice
-        ? fiveStarWines
+        ? orderedFiveStarWines
             .slice()
             .sort((a, b) => parseFloat(a[4]) - parseFloat(b[4]))
-        : fiveStarWines
+        : orderedFiveStarWines
       )
         .filter(wineFilter.bind(null, filterText))
         .map(wine => (
           <Wine starAmount={5} wine={wine} />
         ))}
       {(orderByPrice
-        ? fourStarWines
+        ? orderedFourStarWines
             .slice()
             .sort((a, b) => parseFloat(a[4]) - parseFloat(b[4]))
-        : fourStarWines
+        : orderedFourStarWines
       )
         .filter(wineFilter.bind(null, filterText))
         .map(wine => (
