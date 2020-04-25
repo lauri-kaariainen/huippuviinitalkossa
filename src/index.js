@@ -7,18 +7,37 @@ import {
   useEffect
 } from "preact/hooks";
 import "./style/style.scss";
-import fiveStarWines from "./konala5starwines.json";
-import fourStarWines from "./konala4starwines.json";
+// import fiveStarWines from "./konala5starwines.json";
+// import fourStarWines from "./konala4starwines.json";
 
 const F = Fragment;
 
-const orderedFiveStarWines = fiveStarWines
-  .slice()
-  .sort((a, b) => (a[1] > b[1] ? 1 : -1));
-const orderedFourStarWines = fourStarWines
-  .slice()
-  .sort((a, b) => (a[1] > b[1] ? 1 : -1));
+// const orderedFourStarWines = fourStarWines
+//   .slice()
+//   .sort((a, b) => (a[1] > b[1] ? 1 : -1));
 
+`EurPerLAlkohol: 0
+Hinta: 39.99
+Litrahinta: 53.19
+Luonnehdinta: "Corvina, Rondinella, Molinara,"
+Nimi: "Masi Costasera Amarone Classico 2015"
+Numero: 455887
+Pakkaustyyppi: "Täyteläinen, tanniininen, viikunainen, karhunvatukkainen, herukkainen, mustapippurinen, hennon kanelinen, kevyen nahkainen, yrttinen"
+ProsAlkohol: "luonnonkorkki"
+Pullokoko: 0.75
+Tyyppi: "punaviinit"`;
+` [
+  0"448847",
+  1"Domaine Bousquet Ameri Single Vineyard 2015",
+  2"0.75",
+  3"32.90",
+  4"43.73", 
+  5"punaviinit",
+  6"Malbec, Cabernet Sauvignon, Syrah, Merlot, ",
+  7"Täyteläinen, tanniininen, tumman kirsikkainen, karpaloinen, tummasuklainen, mustapippurinen, tamminen, tasapainoinen",
+  8"luonnonkorkki",
+  "0"
+],`;
 const NameButton = ({ id, name }) => (
   <button
     class="wineName"
@@ -31,29 +50,47 @@ const NameButton = ({ id, name }) => (
 const Wine = ({ wine, starAmount }) => (
   <div
     className={
-      (starAmount === 5 ? "fiveStars" : "fourStars") + " wine " + wine[5]
+      (starAmount === 5 ? "fiveStars" : "fourStars") + " wine " + wine.Tyyppi
     }
-    key={wine[0]}
+    key={wine.Numero}
   >
-    <NameButton name={wine[1]} id={wine[0]} />
+    <NameButton name={wine.Nimi} id={wine.Numero} />
     <br />
-    <span className={wine[5]} />
+    <span className={wine.Tyyppi} />
     {starAmount !== 5 ? <F /> : <span class="fiveStarsSpan" />}
-    <span class="price">{wine[3]}€</span>
-    {wine[6] + " " + wine[7]}
+    <span class="price">{wine.Hinta}€</span>
+    <span class="italic">{wine.Luonnehdinta ? wine.Luonnehdinta : ""}</span>
+    {wine.Pakkaustyyppi}
   </div>
 );
 
 function Wines() {
   const [orderByPrice, setOrderByPrice] = useState(false);
   const [filterText, setFilterText] = useState("");
+  const [fiveStarWines, setFiveStarWines] = useState([]);
+
+  useEffect(
+    () =>
+      fetch("//lauri.space/getbestwinesfromalko/alko/konala")
+        .then(res => res.json())
+        .then(json => setFiveStarWines(json)),
+    []
+  );
+
+  const orderedFiveStarWines = fiveStarWines
+    .slice()
+    .sort((a, b) => (a.Nimi > b.Nimi ? 1 : -1));
 
   const wineFilter = (filterText, wine) =>
     filterText.length
-      ? wine[1].toLowerCase().includes(filterText.toLowerCase()) ||
-        wine[6].toLowerCase().includes(filterText.toLowerCase()) ||
-        wine[7].toLowerCase().includes(filterText.toLowerCase()) ||
-        wine[8].toLowerCase().includes(filterText.toLowerCase())
+      ? wine.Nimi.toLowerCase().includes(filterText.toLowerCase()) ||
+        (!wine.Luonnehdinta
+          ? false
+          : wine.Luonnehdinta.toLowerCase().includes(
+              filterText.toLowerCase()
+            )) ||
+        wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
+        wine.ProsAlkohol.toLowerCase().includes(filterText.toLowerCase())
       : true;
 
   useEffect(() => {
@@ -81,22 +118,12 @@ function Wines() {
       {(orderByPrice
         ? orderedFiveStarWines
             .slice()
-            .sort((a, b) => parseFloat(a[4]) - parseFloat(b[4]))
+            .sort((a, b) => parseFloat(a.Litrahinta) - parseFloat(b.Litrahinta))
         : orderedFiveStarWines
       )
         .filter(wineFilter.bind(null, filterText))
         .map(wine => (
           <Wine starAmount={5} wine={wine} />
-        ))}
-      {(orderByPrice
-        ? orderedFourStarWines
-            .slice()
-            .sort((a, b) => parseFloat(a[4]) - parseFloat(b[4]))
-        : orderedFourStarWines
-      )
-        .filter(wineFilter.bind(null, filterText))
-        .map(wine => (
-          <Wine starAmount={4} wine={wine} />
         ))}
     </div>
   );
