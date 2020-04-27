@@ -1,11 +1,12 @@
 :root{
   --main-button-background:#ff39a8;
   --main-button-color:hsl(210deg,30%,8%);
+  --main-bg-color:hsl(210deg, 30%, 8%);
 }
 
 html{
   background:lightcoral;
-  background: hsl(210deg, 30%, 8%);
+  background: var(--main-bg-color);
   color:brown;
   color:#ff39a8;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -20,7 +21,32 @@ h1{
   color:#ffe100;
   font-size:2.3em;
 }
+.alkoinput{
+  margin-left:10px;
+  font-size:1.0em;
+  color:#ffe100;
+  font-weight:700;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  border:0.5px solid #00beff;
+  width:260px;
+  background:inherit;
+  
 
+  text-transform: none;
+  letter-spacing: initial;
+  height:3rem;
+  padding:0.5rem;
+
+  transition: 0.3s ease-in-out;
+  
+
+}
+.alkoinput::--webkit-input-placeholder{
+  color:yellow;
+}
+li.alkoli {
+  background:var(--main-bg-color);
+}
 button{
   color:var(--main-button-color);
   background:var(--main-button-background);
@@ -35,7 +61,7 @@ button{
   padding-left:4px;
 
 }
-input{
+.filterinput{
   color:white;
   font-size:1.1em;
   width: 130px;
@@ -43,7 +69,7 @@ input{
 background:transparent;
   // border:none;
   border:2px solid #00beff;
-  shadow:none;
+  // shadow:none;
 }
 .price{
   color:#00beff;
@@ -53,6 +79,7 @@ background:transparent;
 .filterButton.active{
   background: #00beff;
   color:var(--main-button-color);
+  transition:0.5s;
   
 }
 .filterButton{
@@ -60,7 +87,8 @@ background:transparent;
   background:var(--main-button-color);
   border:1px solid #00beff;
   padding:5px 10px 5px 10px;
-  margin:inital;
+  margin:initial;
+  transition:0.5s;
 }
 
 .wine{
@@ -70,6 +98,10 @@ background:transparent;
 
 span{
   padding:10px;
+}
+
+.italic{
+  font-style: italic;
 }
 .fiveStarsSpan:before{
   content: "🌟";
