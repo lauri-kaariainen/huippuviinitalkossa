@@ -10,13 +10,15 @@ import { FilterDropdown } from "./components/FilterDropdown.js";
 import "./style/style.scss";
 const F = Fragment;
 
-const NameButton = ({ id, name }) => (
-  <button
-    class="wineName"
-    onclick={() => (window.location = "https://alko.fi/tuotteet/" + id)}
+const NameLink = ({ id, name }) => (
+  <a
+    class="wineName button"
+    target={"_blank"}
+    href={"https://alko.fi/tuotteet/" + id}
+    // onclick={() => (window.location = "https://alko.fi/tuotteet/" + id)}
   >
     {name}
-  </button>
+  </a>
 );
 
 const Wine = ({ wine, starAmount }) => (
@@ -26,7 +28,7 @@ const Wine = ({ wine, starAmount }) => (
     }
     key={wine.Numero}
   >
-    <NameButton name={wine.Nimi} id={wine.Numero} />
+    <NameLink name={wine.Nimi} id={wine.Numero} />
     <br />
     <span className={wine.Tyyppi} />
     {starAmount !== 5 ? <F /> : <span class="fiveStarsSpan" />}

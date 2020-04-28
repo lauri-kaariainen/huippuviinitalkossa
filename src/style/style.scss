@@ -24,6 +24,7 @@ h1{
 .alkoinput{
   margin-left:10px;
   font-size:1.0em;
+  font-size:0.65em;
   color:#ffe100;
   font-weight:700;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -47,13 +48,13 @@ h1{
 li.alkoli {
   background:var(--main-bg-color);
 }
-button{
+a.button{
   color:var(--main-button-color);
   background:var(--main-button-background);
   
   border: none;
   cursor: pointer;
-  font-size:0.9em;
+  font-size:1em;
   font-variant: small-caps;
   margin:-5px;
   margin-left:0px;
