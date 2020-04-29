@@ -15,7 +15,6 @@ const NameLink = ({ id, name }) => (
     class="wineName button"
     target={"_blank"}
     href={"https://alko.fi/tuotteet/" + id}
-    // onclick={() => (window.location = "https://alko.fi/tuotteet/" + id)}
   >
     {name}
   </a>
@@ -46,9 +45,6 @@ function Wines() {
 
   useEffect(
     () =>
-      // (fetch("//lauri.space/getbestwinesfromalko/alko/konala")
-      //   .then(res => res.json())
-      //   .then(json => setFiveStarWines(json)),
       fetch("//lauri.space/getbestwinesfromalko/alko")
         .then(res => res.json())
         .then(json => setAlkoList(json)),
@@ -73,26 +69,25 @@ function Wines() {
 
   return (
     <div>
-      <h1>
-        Huippuviinit
-        <FilterDropdown
-          list={alkoList}
-          placeHolder={"valitse alko"}
-          onselect={result =>
-            fetch(
-              "//lauri.space/getbestwinesfromalko/alko/" +
-                encodeURIComponent(result)
-            )
-              .then(res => res.json())
-              .then(json => setFiveStarWines(json))
-          }
-          inputClassName={"alkoinput"}
-          ulClassName={""}
-          liClassName={"alkoli"}
-          clearWord={"Tyhjennä"}
-        />
-        {/* <input class="alkoinput" value={"Konalassa"} /> */}
-      </h1>
+      <h1>Huippuviinit</h1>
+      <FilterDropdown
+        list={alkoList}
+        placeholder={"valitse alko"}
+        onselect={result =>
+          fetch(
+            "//lauri.space/getbestwinesfromalko/alko/" +
+              encodeURIComponent(result)
+          )
+            .then(res => res.json())
+            .then(json => setFiveStarWines(json))
+        }
+        containerClassName={"alkoinputcontainer"}
+        inputClassName={"alkoinput"}
+        ulClassName={""}
+        liClassName={"alkoli"}
+        // clearWord={"Tyhjennä"}
+      />
+      {/* <input class="alkoinput" value={"Konalassa"} /> */}
       <input
         type="text"
         value={filterText}

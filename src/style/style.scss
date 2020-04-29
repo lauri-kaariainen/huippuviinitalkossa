@@ -21,15 +21,21 @@ h1{
   color:#ffe100;
   font-size:2.3em;
 }
+.alkoinputcontainer{
+  background-color:var(--main-bg-color);
+  color:#ffe100;
+}
+
 .alkoinput{
-  margin-left:10px;
+  // margin-left:10px;
   font-size:1.0em;
-  font-size:0.65em;
+  font-size:1.45em;
   color:#ffe100;
   font-weight:700;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   border:0.5px solid #00beff;
-  width:260px;
+  width:470px;
+  width: 288px;
   background:inherit;
   
 
@@ -37,13 +43,13 @@ h1{
   letter-spacing: initial;
   height:3rem;
   padding:0.5rem;
-
+  // margin-bottom:25px;
   transition: 0.3s ease-in-out;
   
 
 }
-.alkoinput::--webkit-input-placeholder{
-  color:yellow;
+.alkoinput::-webkit-input-placeholder{
+  color:#ffe100;
 }
 li.alkoli {
   background:var(--main-bg-color);
@@ -108,10 +114,6 @@ span{
   content: "🌟";
 
 }
-
-.fourStars:before{
-}
-
 
 span.valkoviinit:before{
   content:"🍷";

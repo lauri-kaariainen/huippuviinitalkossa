@@ -4,12 +4,12 @@ import "../style/filterdropdown.scss";
 
 export const FilterDropdown = ({
   list,
-  placeHolder,
+  placeholder,
   onselect,
+  containerClassName,
   inputClassName,
   ulClassName,
-  liClassName,
-  clearWord
+  liClassName
 }) => {
   const [inputStr, setInputStr] = useState("");
 
@@ -23,7 +23,12 @@ export const FilterDropdown = ({
   );
 
   return (
-    <div class="dropdown_container">
+    <div
+      className={
+        (containerClassName ? containerClassName + " " : "") +
+        " dropdown_container"
+      }
+    >
       <input
         ref={inputRef}
         className={
@@ -39,9 +44,19 @@ export const FilterDropdown = ({
           setDropDownHidden(!dropDownHidden);
         }}
         placeholder={
-          placeHolder === undefined ? "Filter and select" : placeHolder
+          placeholder === undefined ? "Filter and select" : placeholder
         }
       />
+      {inputStr ? (
+        <button
+          class="clearbutton chosen-value"
+          onclick={_ => (setInputStr(""), inputRef.current.focus())}
+        >
+          ⌫
+        </button>
+      ) : (
+        false
+      )}
       <ul
         className={
           "value-list" +
@@ -49,19 +64,14 @@ export const FilterDropdown = ({
           (ulClassName ? " " + ulClassName : "")
         }
       >
-        {[clearWord].concat(visibleList).map(el => (
+        {visibleList.map(el => (
           <li
             className={liClassName ? liClassName : ""}
             key={el}
             onclick={_ => {
-              if (el === clearWord) {
-                setInputStr("");
-                inputRef.current.focus();
-              } else {
-                onselect(el);
-                setInputStr(el);
-                setDropDownHidden(true);
-              }
+              onselect(el);
+              setInputStr(el);
+              setDropDownHidden(true);
             }}
           >
             {el}
