@@ -33,7 +33,7 @@ const Wine = ({ wine, starAmount }) => (
     {starAmount !== 5 ? <F /> : <span class="fiveStarsSpan" />}
     <span class="price">{wine.Hinta}€</span>
     <span class="italic">{wine.Luonnehdinta ? wine.Luonnehdinta : ""}</span>
-    {wine.Pakkaustyyppi}
+    {/* {wine.Pakkaustyyppi} */}
   </div>
 );
 
@@ -55,23 +55,25 @@ function Wines() {
     .slice()
     .sort((a, b) => (a.Nimi > b.Nimi ? 1 : -1));
 
-  const wineFilter = (filterText, wine) =>
-    filterText.length
+  const wineFilter = (filterText, wine) => {
+    console.log(wine);
+    return filterText.length
       ? wine.Nimi.toLowerCase().includes(filterText.toLowerCase()) ||
-        (!wine.Luonnehdinta
-          ? false
-          : wine.Luonnehdinta.toLowerCase().includes(
-              filterText.toLowerCase()
-            )) ||
-        wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
-        wine.ProsAlkohol.toLowerCase().includes(filterText.toLowerCase())
+          (!wine.Luonnehdinta
+            ? false
+            : wine.Luonnehdinta.toLowerCase().includes(
+                filterText.toLowerCase()
+              )) ||
+          wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
+          wine.Tyyppi.toLowerCase().includes(filterText.toLowerCase())
       : true;
+  };
 
   return (
     <div>
       <h1>Huippuviinit</h1>
       <FilterDropdown
-        list={alkoList}
+        list={alkoList.map(e => e.name)}
         placeholder={"valitse alko"}
         onselect={result =>
           fetch(
@@ -85,7 +87,6 @@ function Wines() {
         inputClassName={"alkoinput"}
         ulClassName={""}
         liClassName={"alkoli"}
-        // clearWord={"Tyhjennä"}
       />
       {/* <input class="alkoinput" value={"Konalassa"} /> */}
       <input

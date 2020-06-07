@@ -50,7 +50,9 @@ export const FilterDropdown = ({
       {inputStr ? (
         <button
           class="clearbutton chosen-value"
-          onclick={_ => (setInputStr(""), inputRef.current.focus())}
+          onclick={_ => (
+            setInputStr(""), setDropDownHidden(false), inputRef.current.focus()
+          )}
         >
           ⌫
         </button>
