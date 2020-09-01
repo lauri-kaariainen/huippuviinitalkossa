@@ -16,9 +16,9 @@ export const FilterDropdown = ({
   const [dropDownHidden, setDropDownHidden] = useState(true);
   const inputRef = useRef(null);
 
-  const onFilterInput = str => setInputStr(str);
+  const onFilterInput = (str) => setInputStr(str);
 
-  const visibleList = list.filter(item =>
+  const visibleList = list.filter((item) =>
     item.toLowerCase().includes(inputStr.toLowerCase())
   );
 
@@ -36,10 +36,10 @@ export const FilterDropdown = ({
           // (dropDownHidden ? " notselectable" : "") +
           (inputClassName ? " " + inputClassName : "")
         }
-        oninput={evt => onFilterInput(evt.target.value)}
+        oninput={(evt) => onFilterInput(evt.target.value)}
         type="text"
         value={inputStr}
-        onclick={evt => {
+        onclick={(evt) => {
           dropDownHidden ? false : inputRef.current.blur();
           setDropDownHidden(!dropDownHidden);
         }}
@@ -50,7 +50,7 @@ export const FilterDropdown = ({
       {inputStr ? (
         <button
           class="clearbutton chosen-value"
-          onclick={_ => (
+          onclick={(_) => (
             setInputStr(""), setDropDownHidden(false), inputRef.current.focus()
           )}
         >
@@ -66,11 +66,11 @@ export const FilterDropdown = ({
           (ulClassName ? " " + ulClassName : "")
         }
       >
-        {visibleList.map(el => (
+        {visibleList.map((el) => (
           <li
             className={liClassName ? liClassName : ""}
             key={el}
-            onclick={_ => {
+            onclick={(_) => {
               onselect(el);
               setInputStr(el);
               setDropDownHidden(true);

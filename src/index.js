@@ -73,7 +73,7 @@ function Wines() {
     <div>
       <h1>Huippuviinit</h1>
       <FilterDropdown
-        list={alkoList.map(e => e.name)}
+        list={alkoList}
         placeholder={"valitse alko"}
         onselect={result =>
           fetch(
