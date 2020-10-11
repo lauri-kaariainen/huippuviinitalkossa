@@ -146,7 +146,7 @@ function Wines() {
       )
         .filter(wineFilter.bind(null, filterText))
         .map((wine) => (
-          <Wine starAmount={5} wine={wine} />
+          <Wine starAmount={wine.Stars} wine={wine} />
         ))}
     </div>
   );

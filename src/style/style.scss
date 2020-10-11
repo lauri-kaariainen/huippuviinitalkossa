@@ -56,8 +56,8 @@ li.alkoli {
 }
 a.button{
   color:var(--main-button-color);
-  background:var(--main-button-background);
-  
+  // background:var(--main-button-background);
+  background:#ffe100;
   border: none;
   cursor: pointer;
   font-size:1em;
@@ -116,7 +116,10 @@ span.filterLineText{
 }
 .fiveStarsSpan:before{
   content: "🌟";
-
+  font-size: 125%;
+}
+.fourStars > a{
+  background:var(--main-button-background);
 }
 
 span.valkoviinit:before{
