@@ -1,4 +1,4 @@
-import { render, Fragment } from "preact";
+import {render, Fragment} from "preact";
 import {
   // useReducer,
   useState,
@@ -6,8 +6,8 @@ import {
   // useRef,
   useEffect
 } from "preact/hooks";
-import { FilterDropdown } from "./components/FilterDropdown.js";
-import { Wine } from "./components/Wine";
+import {FilterDropdown} from "./components/FilterDropdown.js";
+import {Wine} from "./components/Wine";
 import "./style/style.scss";
 const F = Fragment;
 
@@ -20,14 +20,56 @@ function Wines() {
   const [filterText, setFilterText] = useState("");
   const [fiveStarWines, setFiveStarWines] = useState([]);
   const [fourStarWines, setFourStarWines] = useState([]);
-  const [currentName, setCurrentName] = useState("");
+  const [currentAlko, setCurrentAlko] = useState("");
   const [alkoList, setAlkoList] = useState([]);
+  const [scrollPos, setScrollPos] = useState(0);
+
+
+  const persistState = _ =>
+    sessionStorage.setItem("state", JSON.stringify({
+      orderByPrice,
+      showFourStarsWines,
+      filterText,
+      fiveStarWines,
+      fourStarWines,
+      currentAlko,
+      alkoList,
+      scrollPos: -document.body.getBoundingClientRect().y
+    }))
+  const loadState = _ => {
+    try {
+      const loadedState = JSON.parse(sessionStorage.getItem("state"))
+
+      setOrderByPrice(loadedState.orderByPrice)
+      setShowFourStarsWines(loadedState.showFourStarsWines)
+      setFilterText(loadedState.filterText)
+      setFiveStarWines(loadedState.fiveStarWines)
+      setFourStarWines(loadedState.fourStarWines)
+      setCurrentAlko(loadedState.currentAlko)
+      setAlkoList(loadedState.alkoList)
+      setScrollPos(loadedState.scrollPos)
+      return true;
+    }
+    catch (e) {
+      console.log("error loading persisted state, fresh loading probably happened")
+      return false;
+    }
+
+  }
 
   useEffect(
-    () =>
-      fetch("//lauri.space/getbestwinesfromalko/alko")
-        .then((res) => res.json())
-        .then((json) => setAlkoList(json)),
+    () => {
+      if (!loadState()) {
+
+        fetch("//lauri.space/getbestwinesfromalko/alko")
+          .then((res) => res.json())
+          .then((json) => setAlkoList(json))
+        console.log("fresh load")
+      }
+      else {
+        console.log("state loaded from sessionstorage")
+      }
+    },
     []
   );
 
@@ -36,27 +78,31 @@ function Wines() {
       "//lauri.space/getbestwinesfromalko/alko/" + encodeURIComponent(alkoName)
     )
       .then((res) => res.json())
-      .then((json) => setFiveStarWines(json));
+      .then((json) => {
+        setFiveStarWines(json)
+      });
 
   const fetchFourStarWines = (alkoName) =>
     fetch(
       "//lauri.space/getbestwinesfromalko/alko/fourstars/" +
-        encodeURIComponent(alkoName)
+      encodeURIComponent(alkoName)
     )
       .then((res) => res.json())
-      .then((json) => setFourStarWines(json));
+      .then((json) => {
+        setFourStarWines(json)
+      });
 
   const wineFilter = (filterText, wine) => {
     //console.log(wine);
     return filterText.length
       ? wine.Nimi.toLowerCase().includes(filterText.toLowerCase()) ||
-          (!wine.Luonnehdinta
-            ? false
-            : wine.Luonnehdinta.toLowerCase().includes(
-                filterText.toLowerCase()
-              )) ||
-          wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
-          wine.Tyyppi.toLowerCase().includes(filterText.toLowerCase())
+      (!wine.Luonnehdinta
+        ? false
+        : wine.Luonnehdinta.toLowerCase().includes(
+          filterText.toLowerCase()
+        )) ||
+      wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
+      wine.Tyyppi.toLowerCase().includes(filterText.toLowerCase())
       : true;
   };
 
@@ -70,8 +116,9 @@ function Wines() {
       <FilterDropdown
         list={alkoList}
         placeholder={"valitse alko"}
+        initialValue={currentAlko}
         onselect={(name) => {
-          setCurrentName(name);
+          setCurrentAlko(name);
           fetchFiveStarWines(name);
           if (showFourStarsWines) fetchFourStarWines(name);
         }}
@@ -103,7 +150,7 @@ function Wines() {
           (showFourStarsWines ? " active" : "")
         }
         onclick={(_) => {
-          if (!showFourStarsWines) fetchFourStarWines(currentName);
+          if (!showFourStarsWines) fetchFourStarWines(currentAlko);
           setShowFourStarsWines(!showFourStarsWines);
         }}
       >
@@ -114,13 +161,19 @@ function Wines() {
       </button>
       {(orderByPrice
         ? orderedWines
-            .slice()
-            .sort((a, b) => parseFloat(a.Litrahinta) - parseFloat(b.Litrahinta))
+          .slice()
+          .sort((a, b) => parseFloat(a.Litrahinta) - parseFloat(b.Litrahinta))
         : orderedWines
       )
         .filter(wineFilter.bind(null, filterText))
         .map((wine) => (
-          <Wine starAmount={wine.Stars} wine={wine} />
+          <Wine
+            starAmount={wine.Stars}
+            wine={wine}
+            onClick={() => {
+              persistState();
+              console.log(-document.body.getBoundingClientRect().y, currentAlko)
+            }} />
         ))}
     </div>
   );
