@@ -1,21 +1,22 @@
-const NameLink = ({ id, name }) => (
+const NameLink = ({id, name, onClick}) => (
   <a
     class="wineName button"
-    target={"_blank"}
+    // target={"_blank"}
     href={"https://alko.fi/tuotteet/" + id}
+    onClick={onClick}
   >
     {name}
   </a>
 );
 
-export const Wine = ({ wine, starAmount }) => (
+export const Wine = ({wine, starAmount, onClick}) => (
   <div
     className={
       (starAmount === 5 ? "fiveStars" : "fourStars") + " wine " + wine.Tyyppi
     }
     key={wine.Numero}
   >
-    <NameLink name={wine.Nimi} id={wine.Numero} />
+    <NameLink name={wine.Nimi} id={wine.Numero} onClick={onClick} />
     <br />
     <span className={wine.Tyyppi} />
     {starAmount !== 5 ? <span /> : <span class="fiveStarsSpan" />}
