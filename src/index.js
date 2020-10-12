@@ -34,7 +34,7 @@ function Wines() {
       fourStarWines,
       currentAlko,
       alkoList,
-      scrollPos: -document.body.getBoundingClientRect().y
+      scrollPos: parseInt(-document.body.getBoundingClientRect().y)
     }))
   const loadState = _ => {
     try {
@@ -59,6 +59,12 @@ function Wines() {
 
   useEffect(
     () => {
+      console.log("use-effect run")
+      if (alkoList.length) {
+        console.log("running scrollPos and returning from use-effect")
+        window.scroll(0, scrollPos)
+        return;
+      }
       if (!loadState()) {
 
         fetch("//lauri.space/getbestwinesfromalko/alko")
@@ -70,7 +76,7 @@ function Wines() {
         console.log("state loaded from sessionstorage")
       }
     },
-    []
+    [alkoList]
   );
 
   const fetchFiveStarWines = (alkoName) =>
@@ -93,7 +99,6 @@ function Wines() {
       });
 
   const wineFilter = (filterText, wine) => {
-    //console.log(wine);
     return filterText.length
       ? wine.Nimi.toLowerCase().includes(filterText.toLowerCase()) ||
       (!wine.Luonnehdinta
@@ -172,7 +177,7 @@ function Wines() {
             wine={wine}
             onClick={() => {
               persistState();
-              console.log(-document.body.getBoundingClientRect().y, currentAlko)
+              console.log(parseInt(-document.body.getBoundingClientRect().y), currentAlko)
             }} />
         ))}
     </div>
