@@ -11,6 +11,19 @@ import {Wine} from "./components/Wine";
 import "./style/style.scss";
 const F = Fragment;
 
+// Only runs in development and will be stripped from production build.
+if (process.env.NODE_ENV !== 'production')
+  console.warn("NOTE process.env.NODE_ENV is in development mode")
+
+window.debug = {};
+window.debug.renderCount = 0;
+window.debug.lastRender = null;
+
+const Debug = _ => (
+  <div style={{background: "red", color: "white", position: "fixed", top: 10, left: 10}}>
+    {window.debug ? JSON.stringify(window.debug) : ""}
+  </div>)
+
 const orderWines = (wines) =>
   wines.slice().sort((a, b) => (a.Nimi > b.Nimi ? 1 : -1));
 
@@ -23,9 +36,10 @@ function Wines() {
   const [currentAlko, setCurrentAlko] = useState("");
   const [alkoList, setAlkoList] = useState([]);
   const [scrollPos, setScrollPos] = useState(0);
+  const [lastClickedWine, setLastClickedWine] = useState("");
 
 
-  const persistState = _ =>
+  const persistState = wineNum =>
     sessionStorage.setItem("state", JSON.stringify({
       orderByPrice,
       showFourStarsWines,
@@ -34,7 +48,8 @@ function Wines() {
       fourStarWines,
       currentAlko,
       alkoList,
-      scrollPos: parseInt(-document.body.getBoundingClientRect().y)
+      scrollPos: parseInt(-document.body.getBoundingClientRect().y),
+      lastClickedWine: wineNum
     }))
   const loadState = _ => {
     try {
@@ -48,6 +63,7 @@ function Wines() {
       setCurrentAlko(loadedState.currentAlko)
       setAlkoList(loadedState.alkoList)
       setScrollPos(loadedState.scrollPos)
+      setLastClickedWine(loadedState.lastClickedWine)
       return true;
     }
     catch (e) {
@@ -63,6 +79,7 @@ function Wines() {
       if (alkoList.length) {
         console.log("running scrollPos and returning from use-effect")
         window.scroll(0, scrollPos)
+        //window.location.hash = lastClickedWine
         return;
       }
       if (!loadState()) {
@@ -76,7 +93,7 @@ function Wines() {
         console.log("state loaded from sessionstorage")
       }
     },
-    [alkoList]
+    [lastClickedWine]
   );
 
   const fetchFiveStarWines = (alkoName) =>
@@ -115,8 +132,11 @@ function Wines() {
     ? orderWines(fiveStarWines.concat(fourStarWines))
     : orderWines(fiveStarWines);
 
+  window.debug.renderCount++;
+  window.debug.lastRender = new Date();
   return (
     <div>
+      {/* <Debug /> */}
       <h1>Huippuviinit</h1>
       <FilterDropdown
         list={alkoList}
@@ -176,8 +196,7 @@ function Wines() {
             starAmount={wine.Stars}
             wine={wine}
             onClick={() => {
-              persistState();
-              console.log(parseInt(-document.body.getBoundingClientRect().y), currentAlko)
+              persistState(wine.Numero);
             }} />
         ))}
     </div>
