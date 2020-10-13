@@ -78,8 +78,8 @@ function Wines() {
       console.log("use-effect run")
       if (alkoList.length) {
         console.log("running scrollPos and returning from use-effect")
-        window.scroll(0, scrollPos)
-        //window.location.hash = lastClickedWine
+        //window.scroll(0, scrollPos)
+        window.location.hash = lastClickedWine
         return;
       }
       if (!loadState()) {
