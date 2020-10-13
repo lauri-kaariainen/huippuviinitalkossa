@@ -11,6 +11,7 @@ const NameLink = ({id, name, onClick}) => (
 
 export const Wine = ({wine, starAmount, onClick}) => (
   <div
+    id={wine.Numero}
     className={
       (starAmount === 5 ? "fiveStars" : "fourStars") + " wine " + wine.Tyyppi
     }
