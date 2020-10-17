@@ -1,4 +1,4 @@
-const NameLink = ({id, name, onClick}) => (
+const NameLink = ({ id, name, onClick }) => (
   <a
     class="wineName button"
     // target={"_blank"}
@@ -9,7 +9,7 @@ const NameLink = ({id, name, onClick}) => (
   </a>
 );
 
-export const Wine = ({wine, starAmount, onClick}) => (
+export const Wine = ({ wine, starAmount, onClick }) => (
   <div
     id={wine.Numero}
     className={
