@@ -1,4 +1,10 @@
-import {render, Fragment} from "preact";
+// Must be the first import
+if (process.env.NODE_ENV === "development") {
+  // Must use require here as import statements are only allowed
+  // to exist at top-level.
+  require("preact/debug");
+}
+import { render, Fragment } from "preact";
 import {
   // useReducer,
   useState,
@@ -6,23 +12,10 @@ import {
   // useRef,
   useEffect
 } from "preact/hooks";
-import {FilterDropdown} from "./components/FilterDropdown.js";
-import {Wine} from "./components/Wine";
+import { FilterDropdown } from "./components/FilterDropdown.js";
+import { Wine } from "./components/Wine";
 import "./style/style.scss";
 const F = Fragment;
-
-// Only runs in development and will be stripped from production build.
-if (process.env.NODE_ENV !== 'production')
-  console.warn("NOTE process.env.NODE_ENV is in development mode")
-
-window.debug = {};
-window.debug.renderCount = 0;
-window.debug.lastRender = null;
-
-const Debug = _ => (
-  <div style={{background: "red", color: "white", position: "fixed", top: 10, left: 10}}>
-    {window.debug ? JSON.stringify(window.debug) : ""}
-  </div>)
 
 const orderWines = (wines) =>
   wines.slice().sort((a, b) => (a.Nimi > b.Nimi ? 1 : -1));
@@ -33,67 +26,16 @@ function Wines() {
   const [filterText, setFilterText] = useState("");
   const [fiveStarWines, setFiveStarWines] = useState([]);
   const [fourStarWines, setFourStarWines] = useState([]);
-  const [currentAlko, setCurrentAlko] = useState("");
+  const [currentName, setCurrentName] = useState("");
   const [alkoList, setAlkoList] = useState([]);
-  const [scrollPos, setScrollPos] = useState(0);
-  const [lastClickedWine, setLastClickedWine] = useState("");
-
-
-  const persistState = wineNum =>
-    sessionStorage.setItem("state", JSON.stringify({
-      orderByPrice,
-      showFourStarsWines,
-      filterText,
-      fiveStarWines,
-      fourStarWines,
-      currentAlko,
-      alkoList,
-      scrollPos: parseInt(-document.body.getBoundingClientRect().y),
-      lastClickedWine: wineNum
-    }))
-  const loadState = _ => {
-    try {
-      const loadedState = JSON.parse(sessionStorage.getItem("state"))
-
-      setOrderByPrice(loadedState.orderByPrice)
-      setShowFourStarsWines(loadedState.showFourStarsWines)
-      setFilterText(loadedState.filterText)
-      setFiveStarWines(loadedState.fiveStarWines)
-      setFourStarWines(loadedState.fourStarWines)
-      setCurrentAlko(loadedState.currentAlko)
-      setAlkoList(loadedState.alkoList)
-      setScrollPos(loadedState.scrollPos)
-      setLastClickedWine(loadedState.lastClickedWine)
-      return true;
-    }
-    catch (e) {
-      console.log("error loading persisted state, fresh loading probably happened")
-      return false;
-    }
-
-  }
+  const [winesWithDetailsVisible, setWinesWithDetailsVisible] = useState([]);
 
   useEffect(
-    () => {
-      console.log("use-effect run")
-      if (alkoList.length) {
-        console.log("running scrollPos and returning from use-effect")
-        //window.scroll(0, scrollPos)
-        window.location.hash = lastClickedWine
-        return;
-      }
-      if (!loadState()) {
-
-        fetch("//lauri.space/getbestwinesfromalko/alko")
-          .then((res) => res.json())
-          .then((json) => setAlkoList(json))
-        console.log("fresh load")
-      }
-      else {
-        console.log("state loaded from sessionstorage")
-      }
-    },
-    [lastClickedWine]
+    () =>
+      fetch("//lauri.space/getbestwinesfromalko/alko")
+        .then((res) => res.json())
+        .then((json) => setAlkoList(json)),
+    []
   );
 
   const fetchFiveStarWines = (alkoName) =>
@@ -101,30 +43,27 @@ function Wines() {
       "//lauri.space/getbestwinesfromalko/alko/" + encodeURIComponent(alkoName)
     )
       .then((res) => res.json())
-      .then((json) => {
-        setFiveStarWines(json)
-      });
+      .then((json) => setFiveStarWines(json));
 
   const fetchFourStarWines = (alkoName) =>
     fetch(
       "//lauri.space/getbestwinesfromalko/alko/fourstars/" +
-      encodeURIComponent(alkoName)
+        encodeURIComponent(alkoName)
     )
       .then((res) => res.json())
-      .then((json) => {
-        setFourStarWines(json)
-      });
+      .then((json) => setFourStarWines(json));
 
   const wineFilter = (filterText, wine) => {
+    //console.log(wine);
     return filterText.length
       ? wine.Nimi.toLowerCase().includes(filterText.toLowerCase()) ||
-      (!wine.Luonnehdinta
-        ? false
-        : wine.Luonnehdinta.toLowerCase().includes(
-          filterText.toLowerCase()
-        )) ||
-      wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
-      wine.Tyyppi.toLowerCase().includes(filterText.toLowerCase())
+          (!wine.Luonnehdinta
+            ? false
+            : wine.Luonnehdinta.toLowerCase().includes(
+                filterText.toLowerCase()
+              )) ||
+          wine.Pakkaustyyppi.toLowerCase().includes(filterText.toLowerCase()) ||
+          wine.Tyyppi.toLowerCase().includes(filterText.toLowerCase())
       : true;
   };
 
@@ -132,20 +71,17 @@ function Wines() {
     ? orderWines(fiveStarWines.concat(fourStarWines))
     : orderWines(fiveStarWines);
 
-  window.debug.renderCount++;
-  window.debug.lastRender = new Date();
   return (
     <div>
-      {/* <Debug /> */}
       <h1>Huippuviinit</h1>
       <FilterDropdown
         list={alkoList}
         placeholder={"valitse alko"}
-        initialValue={currentAlko}
         onselect={(name) => {
-          setCurrentAlko(name);
+          setCurrentName(name);
           fetchFiveStarWines(name);
           if (showFourStarsWines) fetchFourStarWines(name);
+          setWinesWithDetailsVisible([]);
         }}
         containerClassName={"alkoinputcontainer"}
         inputClassName={"alkoinput"}
@@ -175,7 +111,7 @@ function Wines() {
           (showFourStarsWines ? " active" : "")
         }
         onclick={(_) => {
-          if (!showFourStarsWines) fetchFourStarWines(currentAlko);
+          if (!showFourStarsWines) fetchFourStarWines(currentName);
           setShowFourStarsWines(!showFourStarsWines);
         }}
       >
@@ -186,8 +122,8 @@ function Wines() {
       </button>
       {(orderByPrice
         ? orderedWines
-          .slice()
-          .sort((a, b) => parseFloat(a.Litrahinta) - parseFloat(b.Litrahinta))
+            .slice()
+            .sort((a, b) => parseFloat(a.Litrahinta) - parseFloat(b.Litrahinta))
         : orderedWines
       )
         .filter(wineFilter.bind(null, filterText))
@@ -195,9 +131,20 @@ function Wines() {
           <Wine
             starAmount={wine.Stars}
             wine={wine}
-            onClick={() => {
-              persistState(wine.Numero);
-            }} />
+            key={wine.Numero}
+            detailsVisible={
+              !!(winesWithDetailsVisible.indexOf(wine.Numero) !== -1)
+            }
+            onClick={(_) =>
+              winesWithDetailsVisible.indexOf(wine.Numero) !== -1
+                ? setWinesWithDetailsVisible(
+                    winesWithDetailsVisible.filter((num) => num !== wine.Numero)
+                  )
+                : setWinesWithDetailsVisible(
+                    winesWithDetailsVisible.concat(wine.Numero)
+                  )
+            }
+          />
         ))}
     </div>
   );

@@ -106,7 +106,14 @@ background:transparent;
 .wine{
   margin-top:20px;
 }
-
+.wineDetails > img {
+  height:120px;
+}
+.wineDetails{
+  display: flex;
+  align-items:center;
+  justify-content: flex-start;
+}
 
 span.filterLineText{
   padding:10px;
