@@ -1,4 +1,4 @@
-import { useState, useRef } from "preact/hooks";
+import { useState, useRef, useEffect } from "preact/hooks";
 
 import "../style/filterdropdown.scss";
 
@@ -8,6 +8,7 @@ export const FilterDropdown = ({
   onselect,
   containerClassName,
   inputClassName,
+  initialValue,
   ulClassName,
   liClassName
 }) => {
@@ -15,6 +16,10 @@ export const FilterDropdown = ({
 
   const [dropDownHidden, setDropDownHidden] = useState(true);
   const inputRef = useRef(null);
+
+  useEffect(() => (initialValue ? setInputStr(initialValue) : true), [
+    initialValue
+  ]);
 
   const onFilterInput = (str) => setInputStr(str);
 

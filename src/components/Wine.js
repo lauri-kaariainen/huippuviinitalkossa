@@ -20,7 +20,7 @@ const Details = ({ id, name }) => {
         ? false
         : fetch("https://lauri.space/alko-product-api/products/" + id)
             .then((e) => e.json())
-            .then((json) => console.log(json) || setDetailsData(json.data)),
+            .then((json) => setDetailsData(json.data)),
     [id, detailsData]
   );
 
@@ -52,7 +52,13 @@ const Details = ({ id, name }) => {
   );
 };
 
-export const Wine = ({ wine, starAmount, onClick, detailsVisible }) => {
+export const Wine = ({
+  wine,
+  starAmount,
+  onClick,
+  detailsVisible,
+  alkoLinkOnClick
+}) => {
   // const [detailsVisible, setDetailsVisible] = useState(false);
 
   return (
@@ -63,7 +69,7 @@ export const Wine = ({ wine, starAmount, onClick, detailsVisible }) => {
       }
       key={wine.Numero}
     >
-      <NameLink name={wine.Nimi} id={wine.Numero} onClick={onClick} />
+      <NameLink name={wine.Nimi} id={wine.Numero} onClick={alkoLinkOnClick} />
       <br />
       <span className={wine.Tyyppi} />
       {starAmount !== 5 ? <span /> : <span class="fiveStarsSpan" />}
