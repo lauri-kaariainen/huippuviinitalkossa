@@ -164,7 +164,7 @@ function Wines() {
         className={"filterButton" + (orderByPrice ? " active" : "")}
         onclick={(_) => setOrderByPrice(!orderByPrice)}
       >
-        €
+        {orderByPrice ? <span>€</span> : <span>abc</span>}
       </button>
       <button
         className={
@@ -176,7 +176,7 @@ function Wines() {
           setShowFourStarsWines(!showFourStarsWines);
         }}
       >
-        +4
+        {showFourStarsWines ? <span>5 & 4</span> : <span>5</span>}
         <span aria-label="stars" role="img">
           ⭐
         </span>
