@@ -30,6 +30,7 @@ function Wines() {
   const [alkoList, setAlkoList] = useState([]);
   const [currentAlko, setCurrentAlko] = useState("");
   const [scrollPos, setScrollPos] = useState(0);
+  const [visibleDrinkType, setVisibleDrinkType] = useState("all");
   const [lastClickedWine, setLastClickedWine] = useState("");
   const [winesWithDetailsVisible, setWinesWithDetailsVisible] = useState([]);
 
@@ -45,6 +46,7 @@ function Wines() {
         currentAlko,
         alkoList,
         scrollPos: parseInt(-document.body.getBoundingClientRect().y),
+        visibleDrinkType: visibleDrinkType,
         lastClickedWine: wineNum,
         winesWithDetailsVisible
       })
@@ -61,6 +63,7 @@ function Wines() {
       setCurrentAlko(loadedState.currentAlko);
       setAlkoList(loadedState.alkoList);
       setScrollPos(loadedState.scrollPos);
+      setVisibleDrinkType(loadedState.visibleDrinkType);
       setLastClickedWine(loadedState.lastClickedWine);
       setWinesWithDetailsVisible(loadedState.winesWithDetailsVisible);
       return true;
@@ -181,6 +184,26 @@ function Wines() {
           ⭐
         </span>
       </button>
+      <button
+        className={
+          "filterButton filterButtonStars" +
+          (visibleDrinkType === "all" ? " active" : "")
+        }
+        onclick={(_) => {
+          if (visibleDrinkType === "all") setVisibleDrinkType("wines");
+          else if (visibleDrinkType === "wines")
+            setVisibleDrinkType("sparkling");
+          else setVisibleDrinkType("all");
+        }}
+      >
+        {visibleDrinkType === "all" ? (
+          <span>🍷🍾</span>
+        ) : visibleDrinkType === "wines" ? (
+          <span>🍷</span>
+        ) : (
+          <span>🍾</span>
+        )}
+      </button>
       {(orderByPrice
         ? orderedWines
             .slice()
@@ -188,6 +211,13 @@ function Wines() {
         : orderedWines
       )
         .filter(wineFilter.bind(null, filterText))
+        .filter((wine) =>
+          visibleDrinkType === "all"
+            ? true
+            : visibleDrinkType === "sparkling"
+            ? wine.Tyyppi.match(/kuohu/i)
+            : wine.Tyyppi.match(/puna/i) || wine.Tyyppi.match(/valko/i)
+        )
         .map((wine) => (
           <Wine
             starAmount={wine.Stars}
